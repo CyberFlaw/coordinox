@@ -63,7 +63,7 @@ class Pointer:
         x = int(instruction.split(',')[0].split(':')[1][1:])
         y = int(instruction.split(',')[1])
 
-        pyautogui.moveTo(x, y, 0.5, pyautogui.easeInQuad)
+        pyautogui.moveTo(x, y, tween=pyautogui.easeInQuad)
     
 
             
