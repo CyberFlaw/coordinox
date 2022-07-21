@@ -23,7 +23,7 @@ class Driver:
     def setCalibration(self, instruction):
         if ((self.topLeftCoordinates[0] != 0 and self.bottomRightCoordinates[0] != 0) and self.projectionDimentions[0] == 0 ):
             self.projectionDimentions[0] = self.topLeftCoordinates[0] - self.bottomRightCoordinates[0]
-            self.projectionDimentions[1] = self.topLeftCoordinates[1] - self.bottomRightCoordinates[1]
+            self.projectionDimentions[1] = self.bottomRightCoordinates[1] - self.topLeftCoordinates[1]
             print("Projection Coordinates:", self.projectionDimentions)
 
         elif (self.projectionDimentions[1] != 0 and self.projectionDimentions[0] != 0):
