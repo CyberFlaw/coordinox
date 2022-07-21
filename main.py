@@ -2,6 +2,7 @@ from DeviceDriver import Driver
 from UDPClient import Client
 from CursorPointer import Pointer
 
+# Check ip 
 class Main:
     def __init__(self):
         self.udp = Client().initClient()

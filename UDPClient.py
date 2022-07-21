@@ -4,7 +4,7 @@ class Client:
     def __init__(self):
         self.connectionRequest = "Connection Requested"
         self.bytesToSend = str.encode(self.connectionRequest)
-        self.serverAddressPort = ("192.168.137.220", 4210)
+        self.serverAddressPort = ("192.168.137.19", 4210)
         self.bufferSize = 32
 
     def initClient(self):

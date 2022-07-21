@@ -14,10 +14,17 @@ class Driver:
     def getProjectionDimentions(self):
         return self.projectionDimentions;
 
+    def getXCalibration(self):
+        return self.topLeftCoordinates
+    
+    def getYCalibration(self):
+        return self.bottomRightCoordinates
+
     def setCalibration(self, instruction):
         if ((self.topLeftCoordinates[0] != 0 and self.bottomRightCoordinates[0] != 0) and self.projectionDimentions[0] == 0 ):
             self.projectionDimentions[0] = self.topLeftCoordinates[0] - self.bottomRightCoordinates[0]
-            self.projectionDimentions[1] = self.bottomRightCoordinates[1] - self.topLeftCoordinates[1]
+            self.projectionDimentions[1] = self.topLeftCoordinates[1] - self.bottomRightCoordinates[1]
+            print("Projection Coordinates:", self.projectionDimentions)
 
         elif (self.projectionDimentions[1] != 0 and self.projectionDimentions[0] != 0):
             print("Already Calibrated!")
@@ -26,12 +33,12 @@ class Driver:
             if (instruction.split(":")[0] == 'cx'):
                 self.topLeftCoordinates[0] = int(instruction.split(',')[0].split(':')[1][1:])
                 self.topLeftCoordinates[1] = int(instruction.split(',')[1])
-                print("X coordinate calibrated")
+                print("X coordinate calibrated: ", self.topLeftCoordinates)
 
             elif (instruction.split(":")[0] == 'cy'):
                 self.bottomRightCoordinates[0] = int(instruction.split(',')[0].split(':')[1][1:])
                 self.bottomRightCoordinates[1] = int(instruction.split(',')[1][1:])
-                print("Y coordinate calibrated")
+                print("Y coordinate calibrated: ", self.bottomRightCoordinates)
                     
 
 

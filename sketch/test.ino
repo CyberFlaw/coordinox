@@ -76,7 +76,6 @@ void sendData(String opcode) {
 
   dataBuffer = opcode + ": " + String(distanceX) + ", " + String(distanceY);
   dataBuffer.toCharArray(payload, 32);
-  Serial.println(dataBuffer);
    
   Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
   Udp.write(payload);
@@ -84,7 +83,7 @@ void sendData(String opcode) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(19200);
 
   pinMode(triggerPinX, OUTPUT);
   pinMode(echoPinX, INPUT);
@@ -162,7 +161,7 @@ void loop() {
   if(digitalRead(activationPin) == LOW) 
   {
     Serial.println("Click activated");
-    sendData("click");
+    sendData("click");            
   }
 
   sendData("move");
