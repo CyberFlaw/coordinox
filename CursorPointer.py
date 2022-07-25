@@ -1,5 +1,4 @@
-from math import floor
-from tkinter import Scale
+import time
 import pyautogui
 
 class Pointer:
@@ -8,10 +7,15 @@ class Pointer:
         self.projetionDimentions = [0, 0]      # Width - 0, Height - 1
         self.scaleFactors = [1, 1]    # x - 0, y - 1    screen/projection
         self.instructionQueue = []
+        self.dragQueue = []
         self.screen_width, self.screen_height = pyautogui.size()
+        pyautogui.FAILSAFE = False
 
     def getInstructionQueue(self):
         return self.instructionQueue
+
+    def getDragQueue(self):
+        return self.dragQueue
 
     def __setScalingFactors(self):
         self.projetionDimentions = self.driver.getProjectionDimentions() 
@@ -28,7 +32,7 @@ class Pointer:
         y = yCalib[1] - yRaw
 
         xScale = int(x / self.scaleFactors[0])
-        yScale = abs(int(y / self.scaleFactors[1]))
+        yScale = abs(self.screen_height - abs(int(y / self.scaleFactors[1])))
 
         return instruction.split(':')[0] + ": " + "% s" % xScale + ", " +"% s" % yScale
 
@@ -37,33 +41,52 @@ class Pointer:
         # print("Scale factors: ", self.scaleFactors)
         # print("Projection: ", self.projetionDimentions)
         
-        match instruction.split(':')[0]:
-            case 'cx':
-                self.driver.setCalibration(instruction)
-                self.__setScalingFactors()
+        if(instruction.split(':')[0] == 'cx'):
+            self.driver.setCalibration(instruction)
+            self.__setScalingFactors()
             
-            case 'cy':
-                self.driver.setCalibration(instruction)
-                self.__setScalingFactors()
+        elif(instruction.split(':')[0] == 'cy'):
+            self.driver.setCalibration(instruction)
+            self.__setScalingFactors()
 
-            # case 'move':
-            #     self.instructionQueue.append(self.__getScaledInstrucion(instruction))
-            
-            case 'click':
+        elif(instruction.split(':')[0] == 'move'):
+            coordinates = self.driver.getProjectionDimentions()
+            if(coordinates[0] > 0 and coordinates[1] > 0):
+                # if(self.__checkDuplicates(instruction, self.driver.getInstruction()) == "nodup"):
                 self.instructionQueue.append(self.__getScaledInstrucion(instruction))
-                # print(self.instructionQueue)
+                time.sleep(0.01)
+            
+        elif(instruction.split(':')[0] == 'click'):
+            # if(self.__checkDuplicates(instruction, self.driver.getInstruction()) == "nodup"):
+            self.dragQueue.append(self.__getScaledInstrucion(instruction))
+
+    # def __checkDuplicates(self, instruction1, instruction2):
+    #     point1 = [int(instruction1.split(',')[0].split(':')[1][1:]), int(instruction1.split(',')[1][1:])]
+    #     point2 = [int(instruction2.split(',')[0].split(':')[1][1:]), int(instruction2.split(',')[1][1:])]
+
+    #     if((abs(point1[0] - point2[0]) > 5) or (abs(point1[1] - point2[1]) > 5)):
+    #         return "dup"
+    #     else:
+    #         return "nodup"
+
 
     def moveCursor(self):
-        instruction = self.instructionQueue.pop()
-        print(instruction)
-        # Change to move
-        # if(int(instruction.split(',')[0].split(':')[1][1:]) > 0 and int(instruction.split(',')[1]) > 0):
-        #     if(instruction.split(':')[0] == 'click'):
-        
-        x = int(instruction.split(',')[0].split(':')[1][1:])
-        y = int(instruction.split(',')[1])
+        instruction = self.instructionQueue.pop()        
 
-        pyautogui.moveTo(x, y, tween=pyautogui.easeInQuad)
-    
+        if(instruction.split(':')[0] == 'move'):
+            x = int(instruction.split(',')[0].split(':')[1][1:])
+            y = int(instruction.split(',')[1])
+
+            pyautogui.moveTo(x, y, tween=pyautogui.easeInQuad)
+
+    def dragCursor(self):
+        instruction = self.dragQueue.pop()  
+
+        if(instruction.split(':')[0] == 'click'):
+            # self.getInstructionQueue = []
+            x = int(instruction.split(',')[0].split(':')[1][1:])
+            y = int(instruction.split(',')[1])
+
+            pyautogui.dragTo(x, y)        
 
             

@@ -165,5 +165,5 @@ void loop() {
   }
 
   sendData("move");
-
+  delay(100);
 }
